@@ -1,19 +1,35 @@
 package br.com.viniciuspenha.bancodigital.model.db;
 
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
+import lombok.Setter;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter
+@Setter
+@Entity
+@Table(name = "conta")
 public class Conta {
 
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "nome")
     private String nome;
+
+    @Column(name = "sobrenome")
     private String sobrenome;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "nascimento")
     private LocalDate nascimento;
+
+    @Column(name = "cpf")
     private String cpf;
 
     public Conta() {
