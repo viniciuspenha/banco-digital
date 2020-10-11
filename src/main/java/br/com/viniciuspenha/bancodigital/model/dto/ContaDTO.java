@@ -39,4 +39,6 @@ public class ContaDTO {
     @CPF
     private String cpf;
 
+    private EnderecoDTO enderecoDTO;
+
 }

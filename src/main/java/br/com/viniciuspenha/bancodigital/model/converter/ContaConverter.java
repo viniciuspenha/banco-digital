@@ -2,6 +2,7 @@ package br.com.viniciuspenha.bancodigital.model.converter;
 
 import br.com.viniciuspenha.bancodigital.model.db.Conta;
 import br.com.viniciuspenha.bancodigital.model.dto.ContaDTO;
+import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -39,5 +40,9 @@ public class ContaConverter {
             LOGGER.error("ContaConverter.converterParaEntity - Erro ao converter {}", e.getMessage());
             throw e;
         }
+    }
+
+    public void adicionarEnderecoNaEntity(Conta conta, EnderecoDTO enderecoDTO) {
+        conta
     }
 }

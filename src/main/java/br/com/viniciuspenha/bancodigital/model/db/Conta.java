@@ -32,8 +32,23 @@ public class Conta {
     @Column(name = "cpf")
     private String cpf;
 
-    public Conta() {
-    }
+    @Column(name = "cep")
+    private String cep;
+
+    @Column(name = "rua")
+    private String rua;
+
+    @Column(name = "bairro")
+    private String bairro;
+
+    @Column(name = "complemento")
+    private String complemento;
+
+    @Column(name = "cidade")
+    private String cidade;
+
+    @Column(name = "estado")
+    private String estado;
 
     public Conta(String nome, String sobrenome, String email, LocalDate nascimento, String cpf) {
         this.nome = nome;
@@ -41,5 +56,9 @@ public class Conta {
         this.email = email;
         this.nascimento = nascimento;
         this.cpf = cpf;
+    }
+
+    public void setEndereco() {
+
     }
 }

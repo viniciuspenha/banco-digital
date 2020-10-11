@@ -1,6 +1,7 @@
 package br.com.viniciuspenha.bancodigital.controller;
 
 import br.com.viniciuspenha.bancodigital.model.dto.ContaDTO;
+import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
 import br.com.viniciuspenha.bancodigital.service.ContaService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +17,13 @@ public class ContaController {
         this.contaService = contaService;
     }
 
-    @PostMapping()
-    public void passo1(@RequestBody @Valid ContaDTO contaDTO) {
-        contaService.passo1(contaDTO);
+    @PostMapping("/passo1")
+    public void criaContaPasso1(@RequestBody @Valid ContaDTO contaDTO) {
+        contaService.criaContaPasso1(contaDTO);
+    }
+
+    @PostMapping("/{id}/passo2")
+    public void criaContaPasso2(@PathVariable Integer id, @RequestBody @Valid EnderecoDTO enderecoDTO) {
+        contaService.criaContaPasso2(id, enderecoDTO);
     }
 }
