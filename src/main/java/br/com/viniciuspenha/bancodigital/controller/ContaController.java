@@ -1,8 +1,10 @@
 package br.com.viniciuspenha.bancodigital.controller;
 
-import br.com.viniciuspenha.bancodigital.model.dto.ContaDTO;
+import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
+import br.com.viniciuspenha.bancodigital.model.dto.PessoaDTO;
 import br.com.viniciuspenha.bancodigital.service.ContaService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,12 +20,14 @@ public class ContaController {
     }
 
     @PostMapping("/passo1")
-    public void criaContaPasso1(@RequestBody @Valid ContaDTO contaDTO) {
-        contaService.criaContaPasso1(contaDTO);
+    @ResponseStatus(HttpStatus.CREATED)
+    public PessoaDTO criaContaPasso1(@RequestBody @Valid PessoaDTO pessoaDTO) {
+        return contaService.criaContaPasso1(pessoaDTO);
     }
 
     @PostMapping("/{id}/passo2")
-    public void criaContaPasso2(@PathVariable Integer id, @RequestBody @Valid EnderecoDTO enderecoDTO) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public void criaContaPasso2(@PathVariable Integer id, @RequestBody @Valid EnderecoDTO enderecoDTO) throws NotFoundException {
         contaService.criaContaPasso2(id, enderecoDTO);
     }
 }

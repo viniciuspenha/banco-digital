@@ -1,5 +1,7 @@
 package br.com.viniciuspenha.bancodigital.model.db;
 
+import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
+import br.com.viniciuspenha.bancodigital.model.dto.PessoaDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,8 +28,8 @@ public class Conta {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "nascimento")
-    private LocalDate nascimento;
+    @Column(name = "dataNascimento")
+    private LocalDate dataNascimento;
 
     @Column(name = "cpf")
     private String cpf;
@@ -50,15 +52,20 @@ public class Conta {
     @Column(name = "estado")
     private String estado;
 
-    public Conta(String nome, String sobrenome, String email, LocalDate nascimento, String cpf) {
-        this.nome = nome;
-        this.sobrenome = sobrenome;
-        this.email = email;
-        this.nascimento = nascimento;
-        this.cpf = cpf;
+    public Conta(PessoaDTO pessoaDTO) {
+        this.nome = pessoaDTO.getNome();
+        this.sobrenome = pessoaDTO.getSobrenome();
+        this.email = pessoaDTO.getEmail();
+        this.dataNascimento = pessoaDTO.getDataNascimento();
+        this.cpf = pessoaDTO.getCpf();
     }
 
-    public void setEndereco() {
-
+    public void setEndereco(EnderecoDTO enderecoDTO) {
+        this.setCep(enderecoDTO.getCep());
+        this.setRua(enderecoDTO.getRua());
+        this.setBairro(enderecoDTO.getBairro());
+        this.setComplemento(enderecoDTO.getComplemento());
+        this.setCidade(enderecoDTO.getCidade());
+        this.setEstado(enderecoDTO.getEstado());
     }
 }
