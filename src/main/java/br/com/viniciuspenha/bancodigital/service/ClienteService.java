@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -29,38 +30,53 @@ public class ClienteService {
         this.awsHelper = awsHelper;
     }
 
-    public void criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) {
-        LOGGER.info("ClienteService.criaClienteComDadosPessoais - Criando cliente (passo 1) - email {}", dadosPessoaisDTO.getEmail());
-        clienteRepository.save(new Cliente(dadosPessoaisDTO));
+    public ClienteDTO criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) {
+        LOGGER.info("ClienteService.criaClienteComDadosPessoais - Criando cliente - email {}", dadosPessoaisDTO.getEmail());
+        Cliente cliente = clienteRepository.save(new Cliente(dadosPessoaisDTO));
+        LOGGER.info("ClienteService.criaClienteComDadosPessoais - Cliente criado - id {}", cliente.getId());
+        return new ClienteDTO(cliente);
     }
 
-    public void incluiEnderecoDoCliente(Long id, EnderecoDTO enderecoDTO) throws NotFoundException {
-        Cliente cliente = this.buscaContaPorId(id);
+    public ClienteDTO incluiEnderecoDoCliente(Long id, EnderecoDTO enderecoDTO) throws NotFoundException {
+        LOGGER.info("ClienteService.incluiEnderecoDoCliente - Cliente id {}", id);
+        Cliente cliente = this.getClienteById(id);
         cliente.setEndereco(enderecoDTO);
         clienteRepository.save(cliente);
+        LOGGER.info("ClienteService.incluiEnderecoDoCliente - Cliente atualizado");
+        return new ClienteDTO(cliente);
     }
 
-    public void incluiCpfFoto(Long id, ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
-        Cliente cliente = this.buscaContaPorId(id);
+    public ClienteDTO incluiCpfFoto(Long id, ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
+        LOGGER.info("ClienteService.incluiCpfFoto - Cliente id {}", id);
+        Cliente cliente = this.getClienteById(id);
+        LOGGER.info("ClienteService.incluiCpfFoto - Validando conta...");
         cliente.estaValida();
+        LOGGER.info("ClienteService.incluiCpfFoto - Conta valida");
         String url = sendToS3(cliente.getId(), imagemDTO);
         cliente.setUrlCpfFoto(url);
         cliente.setDataAtualizacao(LocalDateTime.now());
+        clienteRepository.save(cliente);
+        LOGGER.info("ClienteService.incluiCpfFoto - Cliente atualizado");
+        return new ClienteDTO(cliente);
     }
 
-    private Cliente buscaContaPorId(Long id) throws NotFoundException {
-        Optional<Cliente> contaOptional = clienteRepository.findById(id);
-        return contaOptional.orElseThrow(NotFoundException::new);
+    public Cliente getClienteValidoComFotoDoCPF(Long id) throws NotFoundException, UnprocessableEntity {
+        LOGGER.info("ClienteService.getClienteValidoComFotoDoCPF - Cliente id {}", id);
+        Cliente cliente = getClienteById(id);
+        LOGGER.info("ClienteService.getClienteValidoComFotoDoCPF - Validando com foto do cpf");
+        cliente.estaValidaComFotoDoCPF();
+        LOGGER.info("ClienteService.getClienteValidoComFotoDoCPF - Valido");
+        return cliente;
+    }
+
+    private Cliente getClienteById(Long id) throws NotFoundException {
+        Optional<Cliente> cliente = clienteRepository.findById(id);
+        return cliente.orElseThrow(NotFoundException::new);
     }
 
     private String sendToS3(Long idConta, ImagemDTO imagemDTO) {
-        String fileName = idConta + "_" + LocalDateTime.now() + "." + imagemDTO.getMimeType();
+        String data = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+        String fileName = data + "_" + idConta + "." + imagemDTO.getExtensao();
         return awsHelper.sendImageToS3(imagemDTO.getImagemByteArray(), fileName);
-    }
-
-    public ClienteDTO getClienteById(Long id) throws NotFoundException, UnprocessableEntity {
-        Cliente cliente = buscaContaPorId(id);
-        cliente.estaValidaComFotoDoCPF();
-        return new ClienteDTO(cliente);
     }
 }

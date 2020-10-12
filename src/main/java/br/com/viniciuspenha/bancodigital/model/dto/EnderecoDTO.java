@@ -33,7 +33,6 @@ public class EnderecoDTO {
     private String bairro;
 
     @JsonProperty("complemento")
-    @NotBlank
     private String complemento;
 
     @JsonProperty("cidade")

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -18,7 +19,11 @@ public class ImagemDTO {
     @NotBlank
     private String mimeType;
 
-    @JsonProperty("imagemByteArray")
+    @JsonProperty("extensao")
     @NotBlank
+    private String extensao;
+
+    @JsonProperty("imagemByteArray")
+    @NotNull
     private byte[] imagemByteArray;
 }

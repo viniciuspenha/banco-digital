@@ -2,12 +2,15 @@ package br.com.viniciuspenha.bancodigital.model.dto;
 
 
 import br.com.viniciuspenha.bancodigital.model.db.Cliente;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,6 +27,17 @@ public class ClienteDTO {
 
     @JsonProperty("endereco")
     private EnderecoDTO enderecoDTO;
+
+    @JsonProperty("urlCpfFoto")
+    private String urlCpfFoto;
+
+    @JsonProperty("dataCriacao")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime dataCriacao;
+
+    @JsonProperty("dataAtualizacao")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime dataAtualizacao;
 
     public ClienteDTO(Cliente cliente) {
         this.id = cliente.getId();
@@ -44,5 +58,9 @@ public class ClienteDTO {
                 cliente.getCidade(),
                 cliente.getEstado()
         );
+
+        this.urlCpfFoto = cliente.getUrlCpfFoto();
+        this.dataCriacao = cliente.getDataCriacao();
+        this.dataAtualizacao = cliente.getDataAtualizacao();
     }
 }

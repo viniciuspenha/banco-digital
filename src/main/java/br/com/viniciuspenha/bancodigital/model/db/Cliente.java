@@ -4,6 +4,7 @@ import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
 import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.DadosPessoaisDTO;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "cliente")
 public class Cliente {

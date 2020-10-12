@@ -24,8 +24,8 @@ public class Conta {
     @Column(name = "saldo")
     private BigDecimal saldo;
 
-    public Conta(Long clienteId) {
-        this.cliente = new Cliente(clienteId);
+    public Conta(Cliente cliente) {
+        this.cliente = cliente;
         Random random = new Random();
         this.agenciaContaId =
                 new AgenciaContaId(

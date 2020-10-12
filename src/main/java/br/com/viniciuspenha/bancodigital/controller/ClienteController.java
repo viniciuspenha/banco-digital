@@ -2,6 +2,7 @@ package br.com.viniciuspenha.bancodigital.controller;
 
 import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
+import br.com.viniciuspenha.bancodigital.model.db.Cliente;
 import br.com.viniciuspenha.bancodigital.model.dto.ClienteDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.ImagemDTO;
@@ -24,25 +25,26 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void criaClienteComDadosPessoais(@RequestBody @Valid DadosPessoaisDTO dadosPessoaisDTO) {
-        clienteService.criaClienteComDadosPessoais(dadosPessoaisDTO);
+    public ClienteDTO criaClienteComDadosPessoais(@RequestBody @Valid DadosPessoaisDTO dadosPessoaisDTO) {
+        return clienteService.criaClienteComDadosPessoais(dadosPessoaisDTO);
     }
 
     @PostMapping("/{id}/endereco")
     @ResponseStatus(HttpStatus.CREATED)
-    public void incluiEnderecoDoCliente(@PathVariable Long id, @RequestBody @Valid EnderecoDTO enderecoDTO) throws NotFoundException {
-        clienteService.incluiEnderecoDoCliente(id, enderecoDTO);
+    public ClienteDTO incluiEnderecoDoCliente(@PathVariable Long id, @RequestBody @Valid EnderecoDTO enderecoDTO) throws NotFoundException {
+        return clienteService.incluiEnderecoDoCliente(id, enderecoDTO);
     }
 
     @PostMapping("/{id}/cpf")
     @ResponseStatus(HttpStatus.CREATED)
-    public void incluiCpfFoto(@PathVariable Long id, @RequestBody ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
-        clienteService.incluiCpfFoto(id, imagemDTO);
+    public ClienteDTO incluiCpfFoto(@PathVariable Long id, @RequestBody @Valid ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
+        return clienteService.incluiCpfFoto(id, imagemDTO);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ClienteDTO getCliente(@PathVariable Long id) throws NotFoundException, UnprocessableEntity {
-        return clienteService.getClienteById(id);
+        Cliente cliente = clienteService.getClienteValidoComFotoDoCPF(id);
+        return new ClienteDTO(cliente);
     }
 }
