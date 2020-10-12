@@ -6,5 +6,6 @@ CREATE TABLE `conta` (
   `conta` varchar(8) NOT NULL,
   `codigo_banco` varchar(3) NOT NULL,
   `saldo` decimal NOT NULL default 0.0,
-  PRIMARY KEY (`agencia`, `conta`)
+  PRIMARY KEY (`agencia`, `conta`),
+  FOREIGN KEY (`cliente_id`) references cliente (`id`)
 );
