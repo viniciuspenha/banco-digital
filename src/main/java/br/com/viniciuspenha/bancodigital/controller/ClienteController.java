@@ -1,5 +1,6 @@
 package br.com.viniciuspenha.bancodigital.controller;
 
+import br.com.viniciuspenha.bancodigital.exception.CpfDuplicadoException;
 import br.com.viniciuspenha.bancodigital.exception.EmailDuplicadoException;
 import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
@@ -26,7 +27,7 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ClienteDTO criaClienteComDadosPessoais(@RequestBody @Valid DadosPessoaisDTO dadosPessoaisDTO) throws EmailDuplicadoException {
+    public ClienteDTO criaClienteComDadosPessoais(@RequestBody @Valid DadosPessoaisDTO dadosPessoaisDTO) throws EmailDuplicadoException, CpfDuplicadoException {
         return clienteService.criaClienteComDadosPessoais(dadosPessoaisDTO);
     }
 

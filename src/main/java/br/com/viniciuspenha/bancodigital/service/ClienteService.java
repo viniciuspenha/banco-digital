@@ -1,5 +1,6 @@
 package br.com.viniciuspenha.bancodigital.service;
 
+import br.com.viniciuspenha.bancodigital.exception.CpfDuplicadoException;
 import br.com.viniciuspenha.bancodigital.exception.EmailDuplicadoException;
 import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
@@ -31,21 +32,31 @@ public class ClienteService {
         this.awsHelper = awsHelper;
     }
 
-    public ClienteDTO criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) throws EmailDuplicadoException {
-        this.validarEmail(dadosPessoaisDTO.getEmail());
+    public ClienteDTO criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) throws EmailDuplicadoException, CpfDuplicadoException {
+        this.validaEmail(dadosPessoaisDTO.getEmail());
+        this.validaCpf(dadosPessoaisDTO.getCpf());
         LOGGER.info("ClienteService.criaClienteComDadosPessoais - Criando cliente - email {}", dadosPessoaisDTO.getEmail());
         Cliente cliente = clienteRepository.save(new Cliente(dadosPessoaisDTO));
         LOGGER.info("ClienteService.criaClienteComDadosPessoais - Cliente criado - id {}", cliente.getId());
         return new ClienteDTO(cliente);
     }
 
-    private void validarEmail(String email) throws EmailDuplicadoException {
+    private void validaEmail(String email) throws EmailDuplicadoException {
         LOGGER.info("ClienteService.validarEmail - Validando email {}", email);
-        Optional<Cliente> cliente = clienteRepository.findByEmail(email);
-        if (cliente.isPresent()) {
+        Optional<Cliente> clienteByEmail = clienteRepository.findByEmail(email);
+        if (clienteByEmail.isPresent()) {
             throw new EmailDuplicadoException();
         }
         LOGGER.info("ClienteService.validarEmail - Email valido");
+    }
+
+    private void validaCpf(String cpf) throws CpfDuplicadoException {
+        LOGGER.info("ClienteService.validarEmail - Validando cpf {}", cpf);
+        Optional<Cliente> clienteByCpf = clienteRepository.findByCpf(cpf);
+        if (clienteByCpf.isPresent()) {
+            throw new CpfDuplicadoException();
+        }
+        LOGGER.info("ClienteService.validarEmail - Cpf valido");
     }
 
     public ClienteDTO incluiEnderecoDoCliente(Long id, EnderecoDTO enderecoDTO) throws NotFoundException {
