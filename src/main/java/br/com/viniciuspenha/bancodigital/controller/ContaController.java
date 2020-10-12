@@ -19,7 +19,7 @@ public class ContaController {
     }
 
     @PostMapping
-    public void criaConta(@PathVariable Integer clienteId) throws NotFoundException, UnprocessableEntity {
+    public void criaConta(@PathVariable Long clienteId) throws NotFoundException, UnprocessableEntity {
         contaService.criaConta(clienteId);
     }
 }

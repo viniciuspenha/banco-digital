@@ -30,19 +30,19 @@ public class ClienteController {
 
     @PostMapping("/{id}/endereco")
     @ResponseStatus(HttpStatus.CREATED)
-    public void incluiEnderecoDoCliente(@PathVariable Integer id, @RequestBody @Valid EnderecoDTO enderecoDTO) throws NotFoundException {
+    public void incluiEnderecoDoCliente(@PathVariable Long id, @RequestBody @Valid EnderecoDTO enderecoDTO) throws NotFoundException {
         clienteService.incluiEnderecoDoCliente(id, enderecoDTO);
     }
 
     @PostMapping("/{id}/cpf")
     @ResponseStatus(HttpStatus.CREATED)
-    public void incluiCpfFoto(@PathVariable Integer id, @RequestBody ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
+    public void incluiCpfFoto(@PathVariable Long id, @RequestBody ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
         clienteService.incluiCpfFoto(id, imagemDTO);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ClienteDTO getCliente(@PathVariable Integer id) throws NotFoundException, UnprocessableEntity {
+    public ClienteDTO getCliente(@PathVariable Long id) throws NotFoundException, UnprocessableEntity {
         return clienteService.getClienteById(id);
     }
 }
