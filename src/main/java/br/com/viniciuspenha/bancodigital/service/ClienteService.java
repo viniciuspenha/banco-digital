@@ -8,34 +8,34 @@ import br.com.viniciuspenha.bancodigital.model.dto.ClienteDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.ImagemDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.DadosPessoaisDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
-import br.com.viniciuspenha.bancodigital.repository.ContaRepository;
+import br.com.viniciuspenha.bancodigital.repository.ClienteRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
-public class ContaService {
+public class ClienteService {
 
-    private final ContaRepository contaRepository;
+    private final ClienteRepository clienteRepository;
     private final AWSHelper awsHelper;
 
-    public ContaService(ContaRepository contaRepository, AWSHelper awsHelper) {
-        this.contaRepository = contaRepository;
+    public ClienteService(ClienteRepository clienteRepository, AWSHelper awsHelper) {
+        this.clienteRepository = clienteRepository;
         this.awsHelper = awsHelper;
     }
 
-    public void criaContaPasso1(DadosPessoaisDTO dadosPessoaisDTO) {
-        contaRepository.save(new Cliente(dadosPessoaisDTO));
+    public void criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) {
+        clienteRepository.save(new Cliente(dadosPessoaisDTO));
     }
 
-    public void criaContaPasso2(Integer id, EnderecoDTO enderecoDTO) throws NotFoundException {
+    public void incluiEnderecoDoCliente(Integer id, EnderecoDTO enderecoDTO) throws NotFoundException {
         Cliente cliente = this.buscaContaPorId(id);
         cliente.setEndereco(enderecoDTO);
-        contaRepository.save(cliente);
+        clienteRepository.save(cliente);
     }
 
-    public void criaContaPasso3(Integer id, ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
+    public void incluiCpfFoto(Integer id, ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
         Cliente cliente = this.buscaContaPorId(id);
         cliente.estaValida();
         String url = sendToS3(cliente.getId(), imagemDTO);
@@ -44,7 +44,7 @@ public class ContaService {
     }
 
     private Cliente buscaContaPorId(Integer id) throws NotFoundException {
-        Optional<Cliente> contaOptional = contaRepository.findById(id);
+        Optional<Cliente> contaOptional = clienteRepository.findById(id);
         return contaOptional.orElseThrow(NotFoundException::new);
     }
 
@@ -53,7 +53,7 @@ public class ContaService {
         return awsHelper.sendImageToS3(imagemDTO.getImagemByteArray(), fileName);
     }
 
-    public ClienteDTO getContaById(Integer id) throws NotFoundException, UnprocessableEntity {
+    public ClienteDTO getClienteById(Integer id) throws NotFoundException, UnprocessableEntity {
         Cliente cliente = buscaContaPorId(id);
         cliente.estaValidaComFotoDoCPF();
         return new ClienteDTO(cliente);
