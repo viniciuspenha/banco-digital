@@ -63,6 +63,10 @@ public class Cliente {
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
+    public Cliente(Long id) {
+        this.id = id;
+    }
+
     public Cliente(DadosPessoaisDTO dadosPessoaisDTO) {
         this.nome = dadosPessoaisDTO.getNome();
         this.sobrenome = dadosPessoaisDTO.getSobrenome();

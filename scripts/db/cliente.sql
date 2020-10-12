@@ -14,7 +14,7 @@ CREATE TABLE `cliente` (
   `cidade` varchar(50),
   `estado` varchar(50),
   `url_cpf_foto` varchar(100),
-  `data_criacao` DATETIME,
+  `data_criacao` DATETIME NOT NULL,
   `data_atualizacao` DATETIME,
   PRIMARY KEY (`id`)
 );

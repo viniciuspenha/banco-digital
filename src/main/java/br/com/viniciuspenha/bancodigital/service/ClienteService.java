@@ -9,6 +9,8 @@ import br.com.viniciuspenha.bancodigital.model.dto.ImagemDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.DadosPessoaisDTO;
 import br.com.viniciuspenha.bancodigital.model.dto.EnderecoDTO;
 import br.com.viniciuspenha.bancodigital.repository.ClienteRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ import java.util.Optional;
 
 @Service
 public class ClienteService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClienteService.class);
 
     private final ClienteRepository clienteRepository;
     private final AWSHelper awsHelper;
@@ -26,6 +30,7 @@ public class ClienteService {
     }
 
     public void criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) {
+        LOGGER.info("ClienteService.criaClienteComDadosPessoais - Criando cliente (passo 1) - email {}", dadosPessoaisDTO.getEmail());
         clienteRepository.save(new Cliente(dadosPessoaisDTO));
     }
 

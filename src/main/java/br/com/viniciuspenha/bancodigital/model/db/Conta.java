@@ -2,8 +2,7 @@ package br.com.viniciuspenha.bancodigital.model.db;
 
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Random;
 
@@ -12,17 +11,27 @@ import java.util.Random;
 @Table(name = "conta")
 public class Conta {
 
-    private Long clienteId;
-    private String agencia;
-    private String conta;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
+    private Cliente cliente;
+
+    @EmbeddedId
+    private AgenciaContaId agenciaContaId;
+
+    @Column(name = "codigo_banco")
     private String codigoBanco;
+
+    @Column(name = "saldo")
     private BigDecimal saldo;
 
     public Conta(Long clienteId) {
-        this.clienteId = clienteId;
+        this.cliente = new Cliente(clienteId);
         Random random = new Random();
-        this.agencia = String.valueOf(random.nextInt(10000));;
-        this.conta = String.valueOf(random.nextInt(100000000));
+        this.agenciaContaId =
+                new AgenciaContaId(
+                    String.valueOf(random.nextInt(10000)),
+                    String.valueOf(random.nextInt(100000000))
+                );
         this.codigoBanco = "123";
         this.saldo = BigDecimal.ZERO;
     }
