@@ -1,5 +1,6 @@
 package br.com.viniciuspenha.bancodigital.service;
 
+import br.com.viniciuspenha.bancodigital.exception.EmailDuplicadoException;
 import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
 import br.com.viniciuspenha.bancodigital.helper.AWSHelper;
@@ -30,11 +31,21 @@ public class ClienteService {
         this.awsHelper = awsHelper;
     }
 
-    public ClienteDTO criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) {
+    public ClienteDTO criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) throws EmailDuplicadoException {
+        this.validarEmail(dadosPessoaisDTO.getEmail());
         LOGGER.info("ClienteService.criaClienteComDadosPessoais - Criando cliente - email {}", dadosPessoaisDTO.getEmail());
         Cliente cliente = clienteRepository.save(new Cliente(dadosPessoaisDTO));
         LOGGER.info("ClienteService.criaClienteComDadosPessoais - Cliente criado - id {}", cliente.getId());
         return new ClienteDTO(cliente);
+    }
+
+    private void validarEmail(String email) throws EmailDuplicadoException {
+        LOGGER.info("ClienteService.validarEmail - Validando email {}", email);
+        Optional<Cliente> cliente = clienteRepository.findByEmail(email);
+        if (cliente.isPresent()) {
+            throw new EmailDuplicadoException();
+        }
+        LOGGER.info("ClienteService.validarEmail - Email valido");
     }
 
     public ClienteDTO incluiEnderecoDoCliente(Long id, EnderecoDTO enderecoDTO) throws NotFoundException {
