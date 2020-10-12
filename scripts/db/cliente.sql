@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS `cliente`;
 
 CREATE TABLE `cliente` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `nome` varchar(50) NOT NULL,
   `sobrenome` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,

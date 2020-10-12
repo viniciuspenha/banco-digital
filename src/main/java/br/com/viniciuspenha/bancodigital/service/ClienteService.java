@@ -29,13 +29,13 @@ public class ClienteService {
         clienteRepository.save(new Cliente(dadosPessoaisDTO));
     }
 
-    public void incluiEnderecoDoCliente(Integer id, EnderecoDTO enderecoDTO) throws NotFoundException {
+    public void incluiEnderecoDoCliente(Long id, EnderecoDTO enderecoDTO) throws NotFoundException {
         Cliente cliente = this.buscaContaPorId(id);
         cliente.setEndereco(enderecoDTO);
         clienteRepository.save(cliente);
     }
 
-    public void incluiCpfFoto(Integer id, ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
+    public void incluiCpfFoto(Long id, ImagemDTO imagemDTO) throws NotFoundException, UnprocessableEntity {
         Cliente cliente = this.buscaContaPorId(id);
         cliente.estaValida();
         String url = sendToS3(cliente.getId(), imagemDTO);
@@ -43,17 +43,17 @@ public class ClienteService {
         cliente.setDataAtualizacao(LocalDateTime.now());
     }
 
-    private Cliente buscaContaPorId(Integer id) throws NotFoundException {
+    private Cliente buscaContaPorId(Long id) throws NotFoundException {
         Optional<Cliente> contaOptional = clienteRepository.findById(id);
         return contaOptional.orElseThrow(NotFoundException::new);
     }
 
-    private String sendToS3(Integer idConta, ImagemDTO imagemDTO) {
+    private String sendToS3(Long idConta, ImagemDTO imagemDTO) {
         String fileName = idConta + "_" + LocalDateTime.now() + "." + imagemDTO.getMimeType();
         return awsHelper.sendImageToS3(imagemDTO.getImagemByteArray(), fileName);
     }
 
-    public ClienteDTO getClienteById(Integer id) throws NotFoundException, UnprocessableEntity {
+    public ClienteDTO getClienteById(Long id) throws NotFoundException, UnprocessableEntity {
         Cliente cliente = buscaContaPorId(id);
         cliente.estaValidaComFotoDoCPF();
         return new ClienteDTO(cliente);

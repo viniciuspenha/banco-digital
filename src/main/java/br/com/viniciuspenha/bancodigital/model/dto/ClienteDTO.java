@@ -17,7 +17,7 @@ import lombok.ToString;
 public class ClienteDTO {
 
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
 
     @JsonProperty("cliente")
     private DadosPessoaisDTO dadosPessoaisDTO;
