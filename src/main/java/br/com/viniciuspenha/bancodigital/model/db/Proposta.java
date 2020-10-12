@@ -23,7 +23,7 @@ public class Proposta {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private StatusProposta status;
+    private StatusPropostaEnum status;
 
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
@@ -39,9 +39,9 @@ public class Proposta {
 
     public void setAceite(boolean aceite) {
         if (aceite) {
-            this.status = StatusProposta.PENDENTE;
+            this.status = StatusPropostaEnum.PENDENTE;
         } else {
-            this.status = StatusProposta.RECUSADA;
+            this.status = StatusPropostaEnum.RECUSADA;
         }
     }
 }

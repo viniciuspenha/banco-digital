@@ -1,5 +1,5 @@
 package br.com.viniciuspenha.bancodigital.model.db;
 
-public enum StatusProposta {
+public enum StatusPropostaEnum {
     ACEITA, PENDENTE, RECUSADA
 }

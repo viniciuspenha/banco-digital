@@ -21,5 +21,6 @@ public class ContaService {
     public void criaConta(Long clienteId) throws NotFoundException, UnprocessableEntity {
         Cliente cliente = clienteService.getClienteValidoComFotoDoCPF(clienteId);
         contaRepository.save(new Conta(cliente));
+        // enviar email
     }
 }
