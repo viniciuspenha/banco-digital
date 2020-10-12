@@ -1,9 +1,6 @@
 package br.com.viniciuspenha.bancodigital.service;
 
-import br.com.viniciuspenha.bancodigital.exception.CpfDuplicadoException;
-import br.com.viniciuspenha.bancodigital.exception.EmailDuplicadoException;
-import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
-import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
+import br.com.viniciuspenha.bancodigital.exception.*;
 import br.com.viniciuspenha.bancodigital.helper.AWSHelper;
 import br.com.viniciuspenha.bancodigital.model.db.Cliente;
 import br.com.viniciuspenha.bancodigital.model.dto.ClienteDTO;
@@ -32,31 +29,40 @@ public class ClienteService {
         this.awsHelper = awsHelper;
     }
 
-    public ClienteDTO criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) throws EmailDuplicadoException, CpfDuplicadoException {
+    public ClienteDTO criaClienteComDadosPessoais(DadosPessoaisDTO dadosPessoaisDTO) throws ValidationException {
         this.validaEmail(dadosPessoaisDTO.getEmail());
         this.validaCpf(dadosPessoaisDTO.getCpf());
+        this.validaIdade(dadosPessoaisDTO);
         LOGGER.info("ClienteService.criaClienteComDadosPessoais - Criando cliente - email {}", dadosPessoaisDTO.getEmail());
         Cliente cliente = clienteRepository.save(new Cliente(dadosPessoaisDTO));
         LOGGER.info("ClienteService.criaClienteComDadosPessoais - Cliente criado - id {}", cliente.getId());
         return new ClienteDTO(cliente);
     }
 
-    private void validaEmail(String email) throws EmailDuplicadoException {
+    private void validaIdade(DadosPessoaisDTO dadosPessoaisDTO) throws ValidationException {
+        LOGGER.info("ClienteService.validaIdade - Validando idade {}", dadosPessoaisDTO.getDataNascimento());
+        if (!dadosPessoaisDTO.maiorDe18Anos()) {
+            throw new ValidationException("Idade inválida. Você precisa ter no mínimo 18 anos");
+        }
+        LOGGER.info("ClienteService.validaIdade - Idade valida");
+    }
+
+    private void validaEmail(String email) throws ValidationException {
         LOGGER.info("ClienteService.validarEmail - Validando email {}", email);
         Optional<Cliente> clienteByEmail = clienteRepository.findByEmail(email);
         if (clienteByEmail.isPresent()) {
-            throw new EmailDuplicadoException();
+            throw new ValidationException("Este e-mail já esta cadastrado em nossa base, favor utilizar outro.");
         }
         LOGGER.info("ClienteService.validarEmail - Email valido");
     }
 
-    private void validaCpf(String cpf) throws CpfDuplicadoException {
-        LOGGER.info("ClienteService.validarEmail - Validando cpf {}", cpf);
+    private void validaCpf(String cpf) throws ValidationException {
+        LOGGER.info("ClienteService.validaCpf - Validando cpf {}", cpf);
         Optional<Cliente> clienteByCpf = clienteRepository.findByCpf(cpf);
         if (clienteByCpf.isPresent()) {
-            throw new CpfDuplicadoException();
+            throw new ValidationException("Este cpf já esta cadastrado em nossa base, favor utilizar outro.");
         }
-        LOGGER.info("ClienteService.validarEmail - Cpf valido");
+        LOGGER.info("ClienteService.validaCpf - Cpf valido");
     }
 
     public ClienteDTO incluiEnderecoDoCliente(Long id, EnderecoDTO enderecoDTO) throws NotFoundException {

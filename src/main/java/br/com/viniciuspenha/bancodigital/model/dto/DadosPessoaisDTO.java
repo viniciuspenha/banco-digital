@@ -14,6 +14,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.Period;
 
 @Getter
 @Setter
@@ -46,4 +47,12 @@ public class DadosPessoaisDTO {
     @CPF
     private String cpf;
 
+    private int calculaIdade() {
+        return Period.between(this.dataNascimento, LocalDate.now()).getYears();
+    }
+
+    public boolean maiorDe18Anos() {
+        int idade = this.calculaIdade();
+        return idade >= 18;
+    }
 }

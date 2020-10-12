@@ -55,6 +55,13 @@ public class RestControllerException {
         return this.getApiError(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY, req);
     }
 
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleValidationException(HttpServletRequest req, Throwable ex) {
+        LOGGER.error("RestControllerException.handleUnprocessableEntity - " + ex.getMessage());
+        return this.getApiError(ex.getMessage(), HttpStatus.BAD_REQUEST, req);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMethodArgumentNotValid(HttpServletRequest req, MethodArgumentNotValidException ex) {
