@@ -1,6 +1,9 @@
 package br.com.viniciuspenha.bancodigital.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -13,17 +16,10 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @ToString
-public class PessoaDTO {
-
-    public PessoaDTO(String nome, String sobrenome, String email, LocalDate dataNascimento, String cpf) {
-        this.nome = nome;
-        this.sobrenome = sobrenome;
-        this.email = email;
-        this.dataNascimento = dataNascimento;
-        this.cpf = cpf;
-    }
-
-    private Integer id;
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class DadosPessoaisDTO {
 
     @JsonProperty("nome")
     @NotBlank

@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS `conta`;
+DROP TABLE IF EXISTS `cliente`;
 
-CREATE TABLE `conta` (
+CREATE TABLE `cliente` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(50) NOT NULL,
   `sobrenome` varchar(50) NOT NULL,
