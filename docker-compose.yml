@@ -1,0 +1,22 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.5
+    container_name: mysql-server
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: bancodigital
+      MYSQL_USER: vini
+      MYSQL_PASSWORD: vini
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./scripts/prepare_mysql.sh:/prepare_mysql.sh
+      - ./src/db:/src/db
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq-server
+    ports:
+      - "5672:5672"
+      - "15672:15672"
