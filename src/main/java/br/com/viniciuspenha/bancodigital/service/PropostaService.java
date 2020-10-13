@@ -4,6 +4,8 @@ import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
 import br.com.viniciuspenha.bancodigital.model.db.Cliente;
 import br.com.viniciuspenha.bancodigital.model.db.Proposta;
+import br.com.viniciuspenha.bancodigital.model.dto.ClienteDTO;
+import br.com.viniciuspenha.bancodigital.rabbit.ValidacaoQueueSender;
 import br.com.viniciuspenha.bancodigital.repository.PropostaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,10 +21,12 @@ public class PropostaService {
 
     private final PropostaRepository propostaRepository;
     private final ClienteService clienteService;
+    private final ValidacaoQueueSender validacaoQueueSender;
 
-    public PropostaService(PropostaRepository propostaRepository, ClienteService clienteService) {
+    public PropostaService(PropostaRepository propostaRepository, ClienteService clienteService, ValidacaoQueueSender validacaoQueueSender) {
         this.propostaRepository = propostaRepository;
         this.clienteService = clienteService;
+        this.validacaoQueueSender = validacaoQueueSender;
     }
 
     public void criaProposta(Long clienteId, boolean aceite) throws NotFoundException, UnprocessableEntity {
@@ -31,11 +35,15 @@ public class PropostaService {
         Proposta proposta = this.validaSeClienteJaTemProposta(clienteId);
         if (proposta != null) {
             this.atualizaProposta(proposta, aceite);
+            if (aceite) {
+                validacaoQueueSender.send(new ClienteDTO(cliente));
+            }
             return;
         }
         LOGGER.info("PropostaService.criaProposta - Criando proposta...");
         propostaRepository.save(new Proposta(cliente.getId(), aceite));
         LOGGER.info("PropostaService.criaProposta - Proposta criada");
+        validacaoQueueSender.send(new ClienteDTO(cliente));
     }
 
     private void atualizaProposta(Proposta proposta, boolean aceite) {
