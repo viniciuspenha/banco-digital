@@ -2,8 +2,7 @@ package br.com.viniciuspenha.bancodigital.service;
 
 import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
-import br.com.viniciuspenha.bancodigital.model.db.Cliente;
-import br.com.viniciuspenha.bancodigital.model.db.Proposta;
+import br.com.viniciuspenha.bancodigital.model.db.*;
 import br.com.viniciuspenha.bancodigital.model.dto.ClienteDTO;
 import br.com.viniciuspenha.bancodigital.rabbit.ValidacaoQueueSender;
 import br.com.viniciuspenha.bancodigital.repository.PropostaRepository;
@@ -34,7 +33,7 @@ public class PropostaService {
         Cliente cliente = clienteService.getClienteValidoComFotoDoCPF(clienteId);
         Proposta proposta = this.validaSeClienteJaTemProposta(clienteId);
         if (proposta != null) {
-            this.atualizaProposta(proposta, aceite);
+            this.atualizaAceiteDaProposta(proposta, aceite);
             if (aceite) {
                 validacaoQueueSender.send(new ClienteDTO(cliente));
             }
@@ -46,12 +45,23 @@ public class PropostaService {
         validacaoQueueSender.send(new ClienteDTO(cliente));
     }
 
-    private void atualizaProposta(Proposta proposta, boolean aceite) {
-        LOGGER.info("PropostaService.criaProposta - Atualizando proposta...");
+    public void atualizaPropostaAposCriacaoDeConta(Long clienteId, Conta conta) throws NotFoundException {
+        LOGGER.info("PropostaService.atualizaPropostaAposCriacaoDeConta - Atualizando proposta...");
+        Optional<Proposta> propostaByClienteId = propostaRepository.findByClienteId(clienteId);
+        Proposta proposta = propostaByClienteId.orElseThrow(NotFoundException::new);
+        proposta.setAgenciaContaId(conta.getAgenciaContaId());
+        proposta.setStatus(StatusPropostaEnum.ACEITA);
+        proposta.setDataAtualizacao(LocalDateTime.now());
+        propostaRepository.save(proposta);
+        LOGGER.info("PropostaService.atualizaPropostaAposCriacaoDeConta - Atualizada");
+    }
+
+    private void atualizaAceiteDaProposta(Proposta proposta, boolean aceite) {
+        LOGGER.info("PropostaService.atualizaAceiteDaProposta - Atualizando proposta...");
         proposta.setAceite(aceite);
         proposta.setDataAtualizacao(LocalDateTime.now());
         propostaRepository.save(proposta);
-        LOGGER.info("PropostaService.criaProposta - Proposta atualizada");
+        LOGGER.info("PropostaService.atualizaAceiteDaProposta - Proposta atualizada");
     }
 
     private Proposta validaSeClienteJaTemProposta(Long clienteId) {

@@ -2,6 +2,7 @@ package br.com.viniciuspenha.bancodigital.controller;
 
 import br.com.viniciuspenha.bancodigital.exception.NotFoundException;
 import br.com.viniciuspenha.bancodigital.exception.UnprocessableEntity;
+import br.com.viniciuspenha.bancodigital.model.dto.ContaDTO;
 import br.com.viniciuspenha.bancodigital.service.ContaService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +19,8 @@ public class ContaController {
         this.contaService = contaService;
     }
 
-    @PostMapping
-    public void criaConta(@PathVariable Long clienteId) throws NotFoundException, UnprocessableEntity {
-        contaService.criaConta(clienteId);
+    @PostMapping("/{clienteId}")
+    public ContaDTO criaConta(@PathVariable Long clienteId) throws NotFoundException, UnprocessableEntity {
+        return contaService.criaConta(clienteId);
     }
 }

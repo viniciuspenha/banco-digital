@@ -1,6 +1,7 @@
 package br.com.viniciuspenha.bancodigital.model.db;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -8,6 +9,7 @@ import java.util.Random;
 
 @Getter
 @Entity
+@NoArgsConstructor
 @Table(name = "conta")
 public class Conta {
 
