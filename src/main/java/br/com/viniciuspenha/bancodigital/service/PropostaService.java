@@ -36,7 +36,6 @@ public class PropostaService {
         LOGGER.info("PropostaService.criaProposta - Criando proposta...");
         propostaRepository.save(new Proposta(cliente.getId(), aceite));
         LOGGER.info("PropostaService.criaProposta - Proposta criada");
-        propostaRepository.findByClienteId(clienteId);
     }
 
     private void atualizaProposta(Proposta proposta, boolean aceite) {
